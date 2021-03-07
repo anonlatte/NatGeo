@@ -1,9 +1,10 @@
 package com.anonlatte.anime
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -12,11 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.accompanist.coil.CoilImage
 import java.util.*
 
 private val dummyArticles = listOf(
@@ -55,7 +55,11 @@ fun Home() {
 
 @Composable
 private fun News(articles: List<Article>) {
-    ScrollableColumn(contentPadding = PaddingValues(16.dp)) {
+    Column(
+        Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(PaddingValues(16.dp))
+    ) {
         articles.forEach {
             if (it == articles[0]) {
                 ArticleMainItem(title = it.title, category = it.category, photo = it.photo)
@@ -63,6 +67,7 @@ private fun News(articles: List<Article>) {
                 ArticleItem(title = it.title, category = it.category, photo = it.photo)
             }
         }
+
     }
 }
 
@@ -96,11 +101,12 @@ private fun ArticleItem(
         val typography = MaterialTheme.typography
         Card(
             shape = MaterialTheme.shapes.medium,
-            modifier = Modifier.preferredHeight(312.dp)
+            modifier = Modifier.requiredHeight(312.dp)
         ) {
             Column {
                 Image(
-                    bitmap = imageResource(id = R.drawable.whales),
+                    painter = painterResource(R.drawable.whales),
+                    contentDescription = null,
                     modifier = Modifier.weight(1f),
                     contentScale = ContentScale.Crop
                 )
@@ -112,7 +118,12 @@ private fun ArticleItem(
                     Text(text = category, style = typography.caption)
                     Text(text = title, style = typography.h5)
                     TextButton(onClick = { /*TODO*/ }) {
-                        Icon(Icons.Filled.Menu, modifier = Modifier.size(16.dp), tint = Color.Black)
+                        Icon(
+                            Icons.Filled.Menu,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.Black
+                        )
                         Spacer(modifier = Modifier.padding(4.dp))
                         Text(
                             text = stringResource(id = R.string.btn_read),
@@ -124,7 +135,7 @@ private fun ArticleItem(
 
             }
         }
-        Spacer(modifier = Modifier.preferredSize(16.dp))
+        Spacer(modifier = Modifier.requiredSize(16.dp))
     }
 }
 
@@ -138,11 +149,12 @@ private fun ArticleMainItem(
         val typography = MaterialTheme.typography
         Card(
             shape = MaterialTheme.shapes.medium,
-            modifier = Modifier.preferredHeight(312.dp)
+            modifier = Modifier.requiredHeight(312.dp)
         ) {
             Box {
                 Image(
-                    bitmap = imageResource(id = R.drawable.field),
+                    painter = painterResource(R.drawable.field),
+                    contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
                 Column(
@@ -153,7 +165,12 @@ private fun ArticleMainItem(
                     Text(text = category, style = typography.caption, color = Color.White)
                     Text(text = title, style = typography.h5, color = Color.White)
                     TextButton(onClick = { /*TODO*/ }) {
-                        Icon(Icons.Filled.Menu, modifier = Modifier.size(16.dp), tint = Color.White)
+                        Icon(
+                            Icons.Filled.Menu,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.White
+                        )
                         Spacer(modifier = Modifier.padding(4.dp))
                         Text(
                             text = stringResource(id = R.string.btn_read),
@@ -164,27 +181,31 @@ private fun ArticleMainItem(
                 }
             }
         }
-        Spacer(modifier = Modifier.preferredSize(16.dp))
+        Spacer(modifier = Modifier.requiredSize(16.dp))
     }
 }
 
+/*
 @Composable
 private fun WebImage(data: Any) {
     CoilImage(
         contentScale = ContentScale.Crop,
         data = data,
         fadeIn = true,
-        modifier = Modifier.preferredSize(280.dp, 128.dp),
-        /*loading = {
+        modifier = Modifier.requiredSize(280.dp, 128.dp),
+        */
+/*loading = {
             Box {
                 CircularProgressIndicator(Modifier.align(Alignment.Center))
             }
         },
         error = {
             Image(bitmap = imageResource(id = R.drawable.field))
-        }*/
+        }*//*
+
     )
 }
+*/
 
 data class Article(
     val id: String,
