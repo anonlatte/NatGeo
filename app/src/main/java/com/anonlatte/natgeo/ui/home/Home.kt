@@ -20,11 +20,12 @@ import com.anonlatte.natgeo.data.model.Article
 import com.anonlatte.natgeo.utils.Constant.dummyArticles
 import com.anonlatte.natgeo.utils.DefaultSize
 import com.anonlatte.natgeo.utils.Margin
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
 private fun ArticleItem(
     title: String,
-    urlToImage: String?
+    urlToImage: String? = null
 ) {
     MaterialTheme {
         val typography = MaterialTheme.typography
@@ -33,12 +34,24 @@ private fun ArticleItem(
             modifier = Modifier.requiredHeight(DefaultSize.articleCardHeight)
         ) {
             Column {
-                Image(
-                    painter = painterResource(R.drawable.whales),
-                    contentDescription = null,
-                    modifier = Modifier.weight(1f),
-                    contentScale = ContentScale.Crop
-                )
+                if (urlToImage != null) {
+                    CoilImage(
+                        data = urlToImage,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        loading = {
+                            Box(Modifier.fillMaxSize()) { CircularProgressIndicator() }
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(R.drawable.whales),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
                 Column(
                     modifier = Modifier
                         .padding(Margin.normal)
@@ -70,7 +83,7 @@ private fun ArticleItem(
 @Composable
 private fun ArticleMainItem(
     title: String,
-    urlToImage: String?
+    urlToImage: String? = null
 ) {
     MaterialTheme {
         val typography = MaterialTheme.typography
@@ -79,11 +92,22 @@ private fun ArticleMainItem(
             modifier = Modifier.requiredHeight(DefaultSize.articleCardHeight)
         ) {
             Box {
-                Image(
-                    painter = painterResource(R.drawable.field),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop
-                )
+                if (urlToImage != null) {
+                    CoilImage(
+                        data = urlToImage,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        loading = {
+                            Box(Modifier.fillMaxSize()) { CircularProgressIndicator() }
+                        }
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(R.drawable.field),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 Column(
                     modifier = Modifier
                         .padding(Margin.normal)
@@ -120,9 +144,9 @@ private fun News(articles: List<Article>) {
                 urlToImage = articles.first().urlToImage
             )
         }
-        for (i in articles) {
+        for (i in 1 until articles.size) {
             item {
-                ArticleItem(title = i.title, urlToImage = i.urlToImage)
+                ArticleItem(title = articles[i].title, urlToImage = articles[i].urlToImage)
             }
         }
     }
@@ -131,19 +155,13 @@ private fun News(articles: List<Article>) {
 @Preview
 @Composable
 private fun PreviewArticleItem() {
-    ArticleItem(
-        title = dummyArticles[0].title,
-        urlToImage = dummyArticles[0].urlToImage
-    )
+    ArticleItem(title = dummyArticles[0].title)
 }
 
 @Preview
 @Composable
 private fun PreviewArticleMainItem() {
-    ArticleMainItem(
-        title = dummyArticles[1].title,
-        urlToImage = dummyArticles[1].urlToImage
-    )
+    ArticleMainItem(title = dummyArticles[1].title)
 }
 
 @Composable
