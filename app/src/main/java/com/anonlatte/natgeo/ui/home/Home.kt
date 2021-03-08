@@ -12,14 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anonlatte.natgeo.R
 import com.anonlatte.natgeo.data.model.Article
 import com.anonlatte.natgeo.utils.Constant.dummyArticles
-import com.anonlatte.natgeo.utils.DefaultSize
-import com.anonlatte.natgeo.utils.Margin
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
@@ -31,7 +31,7 @@ private fun ArticleItem(
         val typography = MaterialTheme.typography
         Card(
             shape = MaterialTheme.shapes.medium,
-            modifier = Modifier.requiredHeight(DefaultSize.articleCardHeight)
+            modifier = Modifier.requiredHeight(dimensionResource(R.dimen.articleCardHeight))
         ) {
             Column {
                 if (urlToImage != null) {
@@ -54,7 +54,7 @@ private fun ArticleItem(
                 }
                 Column(
                     modifier = Modifier
-                        .padding(Margin.normal)
+                        .padding(dimensionResource(R.dimen.marginNormal))
                         .wrapContentHeight()
                 ) {
                     Text(text = title, style = typography.h5)
@@ -62,10 +62,10 @@ private fun ArticleItem(
                         Icon(
                             Icons.Filled.Menu,
                             contentDescription = null,
-                            modifier = Modifier.size(Margin.normal),
+                            modifier = Modifier.size(dimensionResource(R.dimen.marginNormal)),
                             tint = Color.Black
                         )
-                        Spacer(modifier = Modifier.padding(Margin.extraSmall))
+                        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.marginExtraSmall)))
                         Text(
                             text = stringResource(id = R.string.btn_read),
                             style = typography.button,
@@ -76,7 +76,7 @@ private fun ArticleItem(
 
             }
         }
-        Spacer(modifier = Modifier.requiredSize(Margin.normal))
+        Spacer(modifier = Modifier.requiredSize(dimensionResource(R.dimen.marginNormal)))
     }
 }
 
@@ -89,7 +89,7 @@ private fun ArticleMainItem(
         val typography = MaterialTheme.typography
         Card(
             shape = MaterialTheme.shapes.medium,
-            modifier = Modifier.requiredHeight(DefaultSize.articleCardHeight)
+            modifier = Modifier.requiredHeight(dimensionResource(R.dimen.articleCardHeight))
         ) {
             Box {
                 if (urlToImage != null) {
@@ -110,7 +110,7 @@ private fun ArticleMainItem(
                 }
                 Column(
                     modifier = Modifier
-                        .padding(Margin.normal)
+                        .padding(dimensionResource(R.dimen.marginNormal))
                         .align(Alignment.BottomStart)
                 ) {
                     Text(text = title, style = typography.h5, color = Color.White)
@@ -118,10 +118,10 @@ private fun ArticleMainItem(
                         Icon(
                             Icons.Filled.Menu,
                             contentDescription = null,
-                            modifier = Modifier.size(Margin.normal),
+                            modifier = Modifier.size(dimensionResource(R.dimen.marginNormal)),
                             tint = Color.White
                         )
-                        Spacer(modifier = Modifier.padding(Margin.extraSmall))
+                        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.marginExtraSmall)))
                         Text(
                             text = stringResource(id = R.string.btn_read),
                             style = typography.button,
@@ -131,13 +131,24 @@ private fun ArticleMainItem(
                 }
             }
         }
-        Spacer(modifier = Modifier.requiredSize(Margin.normal))
+        Spacer(modifier = Modifier.requiredSize(dimensionResource(R.dimen.marginNormal)))
     }
 }
 
 @Composable
-private fun News(articles: List<Article>) {
-    LazyColumn(Modifier.padding(PaddingValues(Margin.normal))) {
+private fun News(articles: List<Article>?) {
+    if (articles.isNullOrEmpty()) {
+        return
+    }
+    LazyColumn(
+        modifier = Modifier.padding(
+            PaddingValues(
+                horizontal = dimensionResource(R.dimen.marginNormal),
+                vertical = dimensionResource(R.dimen.marginSmall)
+            )
+        ),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.marginExtraSmall))
+    ) {
         item {
             ArticleMainItem(
                 title = articles.first().title,
@@ -165,8 +176,10 @@ private fun PreviewArticleMainItem() {
 }
 
 @Composable
-fun Home() {
-    Column(modifier = Modifier.background(Color(0xFFFAFAFA))) {
-        News(articles = dummyArticles)
+fun Home(viewModel: HomeViewModel = viewModel()) {
+    // val news: List<Article>? by viewModel.getNews().observeAsState()
+    val news = dummyArticles
+    Column(modifier = Modifier.background(Color(0xFFF0F0F0))) {
+        News(articles = news)
     }
 }
