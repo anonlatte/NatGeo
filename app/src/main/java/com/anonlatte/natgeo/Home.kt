@@ -1,4 +1,4 @@
-package com.anonlatte.anime
+package com.anonlatte.natgeo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

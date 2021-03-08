@@ -1,4 +1,4 @@
-package com.anonlatte.anime
+package com.anonlatte.natgeo
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

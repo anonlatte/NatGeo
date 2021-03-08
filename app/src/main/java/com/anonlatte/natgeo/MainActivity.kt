@@ -1,4 +1,4 @@
-package com.anonlatte.anime
+package com.anonlatte.natgeo
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
