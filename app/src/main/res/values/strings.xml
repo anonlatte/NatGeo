@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">NatGeo</string>
     <string name="btn_read">Read</string>
+    <string name="content_empty_news">Didn\'t get any news</string>
 </resources>

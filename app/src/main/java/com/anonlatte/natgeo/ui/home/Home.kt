@@ -1,6 +1,5 @@
 package com.anonlatte.natgeo.ui.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,12 +7,13 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,15 +40,11 @@ private fun ArticleItem(
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         loading = {
-                            Box(Modifier.fillMaxSize()) { CircularProgressIndicator() }
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) { CircularProgressIndicator() }
                         },
-                        modifier = Modifier.weight(1f)
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(R.drawable.whales),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -98,14 +94,11 @@ private fun ArticleMainItem(
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         loading = {
-                            Box(Modifier.fillMaxSize()) { CircularProgressIndicator() }
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) { CircularProgressIndicator() }
                         }
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(R.drawable.field),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop
                     )
                 }
                 Column(
@@ -136,8 +129,8 @@ private fun ArticleMainItem(
 }
 
 @Composable
-private fun News(articles: List<Article>?) {
-    if (articles.isNullOrEmpty()) {
+private fun News(articles: List<Article> = emptyList()) {
+    if (articles.isEmpty()) {
         return
     }
     LazyColumn(
@@ -155,10 +148,44 @@ private fun News(articles: List<Article>?) {
                 urlToImage = articles.first().urlToImage
             )
         }
-        for (i in 1 until articles.size) {
-            item {
-                ArticleItem(title = articles[i].title, urlToImage = articles[i].urlToImage)
+        if (articles.size > 1) {
+            for (i in 1 until articles.size) {
+                item {
+                    ArticleItem(title = articles[i].title, urlToImage = articles[i].urlToImage)
+                }
             }
+        }
+    }
+}
+
+@Composable
+private fun EmptyListScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(id = R.string.content_empty_news),
+            style = MaterialTheme.typography.h5,
+        )
+    }
+}
+
+@Composable
+private fun LoadNews(viewModel: HomeViewModel = viewModel()) {
+    val newsUiState: NewsUiState by viewModel.uiState.collectAsState(initial = NewsUiState.Loading)
+
+    when (newsUiState) {
+        is NewsUiState.Error -> {
+            EmptyListScreen()
+        }
+        NewsUiState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        is NewsUiState.Success -> {
+            News((newsUiState as NewsUiState.Success).news)
         }
     }
 }
@@ -176,10 +203,8 @@ private fun PreviewArticleMainItem() {
 }
 
 @Composable
-fun Home(viewModel: HomeViewModel = viewModel()) {
-    // val news: List<Article>? by viewModel.getNews().observeAsState()
-    val news = dummyArticles
+fun Home() {
     Column(modifier = Modifier.background(Color(0xFFF0F0F0))) {
-        News(articles = news)
+        LoadNews()
     }
 }
