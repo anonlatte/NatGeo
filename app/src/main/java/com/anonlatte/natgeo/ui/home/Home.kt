@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,10 +17,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anonlatte.natgeo.R
 import com.anonlatte.natgeo.data.model.Article
-import com.anonlatte.natgeo.utils.Constant.dummyArticles
+import com.anonlatte.natgeo.ui.custom.SearchField
+import com.anonlatte.natgeo.utils.debounce
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
@@ -193,18 +196,25 @@ private fun LoadNews(viewModel: HomeViewModel = viewModel()) {
 @Preview
 @Composable
 private fun PreviewArticleItem() {
-    ArticleItem(title = dummyArticles[0].title)
+    ArticleItem(LoremIpsum(10).values.joinToString(" "))
 }
 
 @Preview
 @Composable
 private fun PreviewArticleMainItem() {
-    ArticleMainItem(title = dummyArticles[1].title)
+    ArticleMainItem(LoremIpsum(5).values.joinToString(" "))
 }
 
 @Composable
-fun Home() {
+fun Home(viewModel: HomeViewModel = viewModel()) {
+    val scope = rememberCoroutineScope()
+    val queryJob = debounce<String>(500, scope) {
+        if (it.isNotBlank()) {
+            viewModel.getNews(it)
+        }
+    }
     Column(modifier = Modifier.background(Color(0xFFF0F0F0))) {
+        SearchField(queryJob)
         LoadNews()
     }
 }
