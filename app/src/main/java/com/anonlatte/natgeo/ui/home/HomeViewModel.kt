@@ -32,6 +32,19 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    fun getNews(query: String) {
+        viewModelScope.launch {
+            val articles = mainRepository.getArticles(query)
+            _uiState.value = when (articles) {
+                is RequestState.ConnectionError -> NewsUiState.Error(articles)
+                is RequestState.GenericError -> NewsUiState.Error(articles)
+                is RequestState.ServerError -> NewsUiState.Error(articles)
+                is RequestState.Success -> NewsUiState.Success(articles.value.articles)
+                is RequestState.UnauthorizedError -> NewsUiState.Error(articles)
+            }
+        }
+    }
 }
 
 sealed class NewsUiState {

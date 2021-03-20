@@ -7,6 +7,6 @@ import javax.inject.Inject
 class MainRepository @Inject constructor(
     private val natGeoApi: NatGeoApi,
 ) {
-    suspend fun getArticles() = safeApiCall { natGeoApi.getArticles() }
+    suspend fun getArticles(query: String) = safeApiCall { natGeoApi.getArticles(query) }
     suspend fun getTopHeadlines() = safeApiCall { natGeoApi.getTopHeadlines() }
 }

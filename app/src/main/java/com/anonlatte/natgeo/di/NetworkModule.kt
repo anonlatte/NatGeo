@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 @InstallIn(ViewModelComponent::class)
-class NetworkModule {
+object NetworkModule {
     @Provides
     fun provideOkhttpClient(): OkHttpClient {
         val interceptor = HttpLoggingInterceptor().apply {
@@ -35,10 +35,12 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideNatGeoApi(okHttpClient: OkHttpClient): NatGeoApi = Retrofit.Builder()
+    fun provideRetrofit(okHttpClient: OkHttpClient) = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
         .baseUrl(BuildConfig.API_URL)
         .client(okHttpClient)
         .build()
-        .create(NatGeoApi::class.java)
+
+    @Provides
+    fun provideNatGeoApi(retrofit: Retrofit): NatGeoApi = retrofit.create(NatGeoApi::class.java)
 }
