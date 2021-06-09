@@ -13,7 +13,6 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -51,18 +50,16 @@ fun SearchField(onValueChange: (String) -> Unit) {
         maxLines = 1,
         modifier = Modifier
             .fillMaxWidth()
-            .onFocusChanged { searchIcon = getRequiredIcon(it, searchQuery) },
+            .onFocusChanged { searchIcon = getRequiredIcon(it.hasFocus, searchQuery) },
         placeholder = { Text(text = stringResource(id = R.string.hint_search_news)) }
     )
 }
 
 private fun getRequiredIcon(
-    focusState: FocusState = FocusState.Inactive,
+    hasFocus: Boolean = false,
     searchQuery: String
-): ImageVector {
-    return if (focusState == FocusState.Active || searchQuery.isNotBlank()) {
-        Icons.Outlined.ArrowBack
-    } else {
-        Icons.Outlined.Search
-    }
+): ImageVector = if (hasFocus || searchQuery.isNotBlank()) {
+    Icons.Outlined.ArrowBack
+} else {
+    Icons.Outlined.Search
 }
