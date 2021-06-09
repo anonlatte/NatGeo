@@ -17,10 +17,11 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.anonlatte.natgeo.R
 
 @Composable
-fun SearchField(onValueChange: (String) -> Unit) {
+fun SearchField(modifier: Modifier = Modifier, onValueChange: (String) -> Unit = {}) {
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var searchIcon: ImageVector by remember { mutableStateOf(Icons.Outlined.Search) }
     var isTrailingIconVisible by remember { mutableStateOf(false) }
@@ -48,10 +49,10 @@ fun SearchField(onValueChange: (String) -> Unit) {
             }
         },
         maxLines = 1,
-        modifier = Modifier
-            .fillMaxWidth()
-            .onFocusChanged { searchIcon = getRequiredIcon(it.hasFocus, searchQuery) },
-        placeholder = { Text(text = stringResource(id = R.string.hint_search_news)) }
+        modifier = modifier.onFocusChanged {
+            searchIcon = getRequiredIcon(it.hasFocus, searchQuery)
+        },
+        placeholder = { Text(text = stringResource(R.string.hint_search_news)) }
     )
 }
 
@@ -63,3 +64,7 @@ private fun getRequiredIcon(
 } else {
     Icons.Outlined.Search
 }
+
+@Preview
+@Composable
+private fun PreviewSearchField() = SearchField(modifier = Modifier.fillMaxWidth())
