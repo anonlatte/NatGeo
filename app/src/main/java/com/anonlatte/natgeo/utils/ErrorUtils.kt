@@ -2,7 +2,7 @@ package com.anonlatte.natgeo.utils
 
 import com.anonlatte.natgeo.data.network.RequestState
 import com.anonlatte.natgeo.data.response.ErrorResponse
-import com.google.gson.Gson
+import com.squareup.moshi.Moshi
 import retrofit2.HttpException
 import java.net.UnknownHostException
 
@@ -31,7 +31,9 @@ suspend fun <T> safeApiCall(
 private fun parseErrorResponse(exception: HttpException): RequestState<Nothing> {
     return runCatching {
         val response = exception.response()?.let {
-            Gson().fromJson(it.body().toString(), ErrorResponse::class.java)
+            Moshi.Builder().build().adapter(
+                ErrorResponse::class.java
+            ).fromJson(it.body().toString())
         }
         if (response != null) {
             RequestState.ServerError(

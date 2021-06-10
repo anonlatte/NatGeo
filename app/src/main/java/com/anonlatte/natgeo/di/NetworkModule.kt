@@ -9,7 +9,7 @@ import dagger.hilt.android.components.ViewModelComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -36,7 +36,7 @@ object NetworkModule {
 
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient) = Retrofit.Builder()
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(MoshiConverterFactory.create().asLenient())
         .baseUrl(BuildConfig.API_URL)
         .client(okHttpClient)
         .build()
