@@ -5,9 +5,9 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface NatGeoApi {
-    @GET("everything?domains=nationalgeographic.com")
+    @GET("everything")
     suspend fun getArticles(@Query("q") query: String): ArticlesResponse
 
-    @GET("top-headlines?sources=national-geographic")
+    @GET("top-headlines")
     suspend fun getTopHeadlines(): ArticlesResponse
 }
