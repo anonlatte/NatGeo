@@ -1,5 +1,6 @@
 package com.anonlatte.natgeo.ui.home
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anonlatte.natgeo.data.MainRepository
@@ -12,6 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
