@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Natgeo">
-        <activity android:name="com.anonlatte.natgeo.ui.MainActivity">
+        <activity
+            android:name="com.anonlatte.natgeo.ui.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,4 +1,4 @@
-package com.anonlatte.natgeo.data.model
+package com.anonlatte.natgeo.data.network.response
 
 data class Source(
     val id: String,

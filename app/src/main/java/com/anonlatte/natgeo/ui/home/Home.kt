@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,18 +18,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.anonlatte.natgeo.BuildConfig
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter
+import coil.compose.rememberImagePainter
 import com.anonlatte.natgeo.R
-import com.anonlatte.natgeo.data.model.Article
+import com.anonlatte.natgeo.data.network.response.ArticleDto
 import com.anonlatte.natgeo.ui.custom.SearchField
+import com.anonlatte.natgeo.ui.home.state.NewsUiState
+import com.anonlatte.natgeo.ui.home.viewmodel.HomeViewModel
+import com.anonlatte.natgeo.ui.theme.Dimension
 import com.anonlatte.natgeo.utils.debounce
-import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.imageloading.ImageLoadState
-import com.google.accompanist.imageloading.isFinalState
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import timber.log.Timber
 
 @Composable
 private fun ArticleItem(
@@ -71,23 +70,15 @@ private fun ArticleItem(
     }
 }
 
+@ExperimentalCoilApi
 @Composable
 private fun CoilImage(
     modifier: Modifier, data: Any?
 ) {
-    val painter = rememberCoilPainter(
-        request = data,
-        previewPlaceholder = R.drawable.whales
+    val painter = rememberImagePainter(
+        data = data,
+        builder = { placeholder(R.drawable.whales) }
     )
-    LaunchedEffect(painter) {
-        snapshotFlow { painter.loadState }
-            .filter { it.isFinalState() }
-            .collect {
-                if (it is ImageLoadState.Error && BuildConfig.DEBUG) {
-                    Timber.d(it.throwable)
-                }
-            }
-    }
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Image(
             modifier = modifier.fillMaxSize(),
@@ -95,18 +86,15 @@ private fun CoilImage(
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
-        when (painter.loadState) {
-            is ImageLoadState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-            is ImageLoadState.Error -> {
-                Image(
-                    modifier = modifier.fillMaxSize(),
-                    painter = painterResource(R.drawable.placeholder_image),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                )
-            }
+        if (painter.state is ImagePainter.State.Loading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        } else if (painter.state is ImagePainter.State.Error) {
+            Image(
+                modifier = modifier.fillMaxSize(),
+                painter = painterResource(R.drawable.placeholder_image),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+            )
         }
     }
 }
@@ -152,7 +140,7 @@ private fun ArticleMainItem(
 }
 
 @Composable
-private fun News(articles: List<Article> = emptyList()) {
+private fun News(articles: List<ArticleDto> = emptyList()) {
     if (articles.isEmpty()) return
     LazyColumn(
         modifier = Modifier.padding(
@@ -165,9 +153,9 @@ private fun News(articles: List<Article> = emptyList()) {
     ) {
         itemsIndexed(articles) { index, item ->
             if (index == 0) {
-                ArticleMainItem(title = item.title, urlToImage = item.urlToImage)
+                ArticleMainItem(title = item.title.orEmpty(), urlToImage = item.urlToImage)
             } else {
-                ArticleItem(title = item.title, urlToImage = item.urlToImage)
+                ArticleItem(title = item.title.orEmpty(), urlToImage = item.urlToImage)
             }
         }
     }
@@ -187,9 +175,7 @@ private fun EmptyListScreen() {
 }
 
 @Composable
-private fun LoadNews(viewModel: HomeViewModel = viewModel()) {
-    val newsUiState: NewsUiState by viewModel.uiState.collectAsState(initial = NewsUiState.Loading)
-
+private fun LoadNews(newsUiState: NewsUiState) {
     when (newsUiState) {
         is NewsUiState.Error -> {
             EmptyListScreen()
@@ -200,7 +186,7 @@ private fun LoadNews(viewModel: HomeViewModel = viewModel()) {
             }
         }
         is NewsUiState.Success -> {
-            News((newsUiState as NewsUiState.Success).news)
+            News(newsUiState.news)
         }
     }
 }
@@ -218,15 +204,25 @@ private fun PreviewArticleMainItem() {
 }
 
 @Composable
-fun Home(viewModel: HomeViewModel = viewModel()) {
+fun Home(viewModel: HomeViewModel) {
+    val newsUiState: NewsUiState by viewModel.uiState.collectAsState(initial = NewsUiState.Loading)
     val scope = rememberCoroutineScope()
     val queryJob = debounce<String>(500, scope) {
         if (it.isNotBlank()) {
             viewModel.getNews(it)
         }
     }
+
+    var searchQuery by rememberSaveable { mutableStateOf("") }
     Column(modifier = Modifier.background(Color(0xFFF0F0F0))) {
-        SearchField(modifier = Modifier.fillMaxWidth(), onValueChange = queryJob)
-        LoadNews()
+        SearchField(
+            modifier = Modifier.fillMaxWidth(),
+            searchQuery = searchQuery,
+            onValueChange = {
+                searchQuery = it
+                queryJob(searchQuery)
+            }
+        )
+        LoadNews(newsUiState)
     }
 }

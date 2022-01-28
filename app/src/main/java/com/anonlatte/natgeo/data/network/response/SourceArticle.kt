@@ -1,12 +1,12 @@
-package com.anonlatte.natgeo.data.model
+package com.anonlatte.natgeo.data.network.response
 
-import android.os.Parcelable
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.parcelize.Parcelize
 
 @JsonClass(generateAdapter = true)
-@Parcelize
 data class SourceArticle(
+    @Json(name = "id")
     val id: String? = null,
+    @Json(name = "name")
     val name: String = ""
-) : Parcelable
+)

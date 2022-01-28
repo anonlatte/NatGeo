@@ -1,4 +1,4 @@
-package com.anonlatte.natgeo.ui.home
+package com.anonlatte.natgeo.ui.theme
 
 import androidx.compose.ui.unit.dp
 
