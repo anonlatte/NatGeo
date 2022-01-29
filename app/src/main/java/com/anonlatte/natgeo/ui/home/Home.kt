@@ -179,7 +179,7 @@ fun Home(viewModel: HomeViewModel) {
     var swipeRefreshState: SwipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     val scope = rememberCoroutineScope()
     val queryJob = debounce<String>(500, scope) {
-        if (it.isNotBlank()) {
+        if (it.length >= 3) {
             viewModel.getNews(it)
         }
     }
