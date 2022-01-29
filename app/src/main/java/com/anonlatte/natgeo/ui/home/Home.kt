@@ -1,6 +1,5 @@
 package com.anonlatte.natgeo.ui.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,16 +12,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.ImagePainter
-import coil.compose.rememberImagePainter
 import com.anonlatte.natgeo.R
 import com.anonlatte.natgeo.data.network.response.ArticleDto
+import com.anonlatte.natgeo.ui.custom.CoilImage
 import com.anonlatte.natgeo.ui.custom.SearchField
 import com.anonlatte.natgeo.ui.home.state.NewsUiState
 import com.anonlatte.natgeo.ui.home.viewmodel.HomeViewModel
@@ -70,35 +65,6 @@ private fun ArticleItem(
             }
         }
         Spacer(modifier = Modifier.requiredSize(Dimension.marginNormal))
-    }
-}
-
-@ExperimentalCoilApi
-@Composable
-private fun CoilImage(
-    modifier: Modifier, data: Any?
-) {
-    val painter = rememberImagePainter(
-        data = data,
-        builder = { placeholder(R.drawable.whales) }
-    )
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        Image(
-            modifier = modifier.fillMaxSize(),
-            painter = painter,
-            contentDescription = null,
-            contentScale = ContentScale.Crop
-        )
-        if (painter.state is ImagePainter.State.Loading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        } else if (painter.state is ImagePainter.State.Error) {
-            Image(
-                modifier = modifier.fillMaxSize(),
-                painter = painterResource(R.drawable.placeholder_image),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-            )
-        }
     }
 }
 
