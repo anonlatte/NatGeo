@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.navigation.NavHostController
 import com.anonlatte.natgeo.R
 import com.anonlatte.natgeo.data.model.article.Article
@@ -33,25 +32,24 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ArticleItem(
-    title: String,
-    urlToImage: String? = null,
-    onArticleClick: () -> Unit = {}
+    data: Article,
+    onArticleClick: (Article) -> Unit = {}
 ) {
     MaterialTheme {
         val typography = MaterialTheme.typography
         Card(
             shape = MaterialTheme.shapes.medium,
             modifier = Modifier.requiredHeight(Dimension.articleCardHeight),
-            onClick = onArticleClick
+            onClick = { onArticleClick(data) }
         ) {
             Column {
-                CoilImage(modifier = Modifier.weight(1f), data = urlToImage)
+                CoilImage(modifier = Modifier.weight(1f), data = data.urlToImage)
                 Column(
                     modifier = Modifier
                         .padding(Dimension.marginNormal)
                         .wrapContentHeight()
                 ) {
-                    Text(text = title, style = typography.h5)
+                    Text(text = data.title, style = typography.h5)
                     Row {
                         Icon(
                             Icons.Filled.Menu,
@@ -77,25 +75,24 @@ private fun ArticleItem(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ArticleMainItem(
-    title: String,
-    urlToImage: String? = null,
-    onArticleClick: () -> Unit = {}
+    data: Article,
+    onArticleClick: (Article) -> Unit = {}
 ) {
     MaterialTheme {
         val typography = MaterialTheme.typography
         Card(
             shape = MaterialTheme.shapes.medium,
             modifier = Modifier.requiredHeight(Dimension.articleCardHeight),
-            onClick = onArticleClick
+            onClick = { onArticleClick(data) }
         ) {
             Box {
-                CoilImage(modifier = Modifier.fillMaxSize(), data = urlToImage)
+                CoilImage(modifier = Modifier.fillMaxSize(), data = data.urlToImage)
                 Column(
                     modifier = Modifier
                         .padding(Dimension.marginNormal)
                         .align(Alignment.BottomStart)
                 ) {
-                    Text(text = title, style = typography.h5, color = Color.White)
+                    Text(text = data.title, style = typography.h5, color = Color.White)
                     Row {
                         Icon(
                             Icons.Filled.Menu,
@@ -118,7 +115,7 @@ private fun ArticleMainItem(
 }
 
 @Composable
-private fun News(articles: List<Article> = emptyList(), onArticleClick: () -> Unit) {
+private fun News(articles: List<Article> = emptyList(), onArticleClick: (Article) -> Unit) {
     if (articles.isEmpty()) return
     LazyColumn(
         modifier = Modifier.padding(
@@ -132,14 +129,12 @@ private fun News(articles: List<Article> = emptyList(), onArticleClick: () -> Un
         itemsIndexed(articles) { index, item ->
             if (index == 0) {
                 ArticleMainItem(
-                    title = item.title.orEmpty(),
-                    urlToImage = item.urlToImage,
+                    data = item,
                     onArticleClick = onArticleClick
                 )
             } else {
                 ArticleItem(
-                    title = item.title.orEmpty(),
-                    urlToImage = item.urlToImage,
+                    data = item,
                     onArticleClick = onArticleClick
                 )
             }
@@ -161,7 +156,7 @@ private fun EmptyListScreen() {
 }
 
 @Composable
-private fun LoadNews(newsUiState: NewsUiState, onArticleClick: () -> Unit) {
+private fun LoadNews(newsUiState: NewsUiState, onArticleClick: (Article) -> Unit) {
     when (newsUiState) {
         is NewsUiState.Error -> {
             EmptyListScreen()
@@ -180,13 +175,13 @@ private fun LoadNews(newsUiState: NewsUiState, onArticleClick: () -> Unit) {
 @Preview
 @Composable
 private fun PreviewArticleItem() {
-    ArticleItem(LoremIpsum(10).values.joinToString(" "))
+    ArticleItem(Article())
 }
 
 @Preview
 @Composable
 private fun PreviewArticleMainItem() {
-    ArticleMainItem(LoremIpsum(5).values.joinToString(" "))
+    ArticleMainItem(Article())
 }
 
 @Composable
@@ -232,9 +227,11 @@ fun Home(viewModel: HomeViewModel, navController: NavHostController) {
                 }
             ) {
                 LoadNews(
-                    newsUiState = newsUiState,
-                    onArticleClick = { navController.navigate(NavDestinations.ARTICLE) }
-                )
+                    newsUiState = newsUiState
+                ) { article ->
+                    val articleId = 1
+                    navController.navigate("${NavDestinations.ARTICLE}/$articleId")
+                }
             }
         }
     }
