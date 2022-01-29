@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class SourceArticle(
+data class SourceArticleDto(
     @Json(name = "id")
     val id: String? = null,
     @Json(name = "name")

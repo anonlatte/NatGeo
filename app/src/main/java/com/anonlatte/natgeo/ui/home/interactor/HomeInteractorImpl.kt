@@ -1,9 +1,9 @@
 package com.anonlatte.natgeo.ui.home.interactor
 
 import com.anonlatte.natgeo.data.model.UserInfo
+import com.anonlatte.natgeo.data.model.article.ArticlesData
 import com.anonlatte.natgeo.data.network.ErrorState
 import com.anonlatte.natgeo.data.network.RequestState
-import com.anonlatte.natgeo.data.network.response.ArticlesResponse
 import com.anonlatte.natgeo.data.repository.MainRepository
 import com.anonlatte.natgeo.ui.home.state.NewsUiState
 import kotlinx.coroutines.flow.Flow
@@ -41,7 +41,7 @@ class HomeInteractorImpl @Inject constructor(
     }
 
     private fun buildRequestFlow(
-        request: suspend () -> RequestState<ArticlesResponse>
+        request: suspend () -> RequestState<ArticlesData>
     ): Flow<NewsUiState> {
         return flow {
             emit(NewsUiState.Loading)

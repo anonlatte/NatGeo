@@ -17,8 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.navigation.NavHostController
 import com.anonlatte.natgeo.R
+import com.anonlatte.natgeo.data.model.article.Article
 import com.anonlatte.natgeo.data.navigation.NavDestinations
-import com.anonlatte.natgeo.data.network.response.ArticleDto
 import com.anonlatte.natgeo.ui.custom.CoilImage
 import com.anonlatte.natgeo.ui.custom.SearchBar
 import com.anonlatte.natgeo.ui.custom.SearchBarState
@@ -118,7 +118,7 @@ private fun ArticleMainItem(
 }
 
 @Composable
-private fun News(articles: List<ArticleDto> = emptyList(), onArticleClick: () -> Unit) {
+private fun News(articles: List<Article> = emptyList(), onArticleClick: () -> Unit) {
     if (articles.isEmpty()) return
     LazyColumn(
         modifier = Modifier.padding(
