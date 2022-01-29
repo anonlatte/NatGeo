@@ -6,6 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.anonlatte.natgeo.ui.article.Article
 import com.anonlatte.natgeo.ui.home.Home
 import com.anonlatte.natgeo.ui.home.viewmodel.HomeViewModelImpl
 import com.anonlatte.natgeo.ui.navigation.NavDestinations
@@ -16,7 +17,10 @@ fun NatGeoApp() {
     MaterialTheme {
         NavHost(navController = navController, startDestination = NavDestinations.HOME) {
             composable(NavDestinations.HOME) {
-                Home(viewModel = hiltViewModel<HomeViewModelImpl>())
+                Home(viewModel = hiltViewModel<HomeViewModelImpl>(), navController = navController)
+            }
+            composable(NavDestinations.ARTICLE) {
+                Article()
             }
         }
     }
