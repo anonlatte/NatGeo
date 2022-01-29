@@ -18,7 +18,8 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.anonlatte.natgeo.R
 import com.anonlatte.natgeo.data.network.response.ArticleDto
 import com.anonlatte.natgeo.ui.custom.CoilImage
-import com.anonlatte.natgeo.ui.custom.SearchField
+import com.anonlatte.natgeo.ui.custom.SearchBar
+import com.anonlatte.natgeo.ui.custom.SearchBarState
 import com.anonlatte.natgeo.ui.home.state.NewsUiState
 import com.anonlatte.natgeo.ui.home.viewmodel.HomeViewModel
 import com.anonlatte.natgeo.ui.theme.Dimension
@@ -188,27 +189,34 @@ fun Home(viewModel: HomeViewModel) {
         swipeRefreshState = SwipeRefreshState(false)
     }
 
-    Column(modifier = Modifier.background(Color(0xFFF0F0F0))) {
-        SearchField(
-            modifier = Modifier.fillMaxWidth(),
-            searchQuery = searchQuery,
-            onValueChange = {
-                searchQuery = it
-                queryJob(searchQuery)
-            }
-        )
-        SwipeRefresh(
-            state = swipeRefreshState,
-            onRefresh = {
-                swipeRefreshState = SwipeRefreshState(true)
-                if (searchQuery.isEmpty()) {
-                    viewModel.getTopHeadlines()
-                } else {
-                    viewModel.getNews(searchQuery)
+    Scaffold(
+        topBar = {
+            SearchBar(
+                searchQuery = searchQuery,
+                title = stringResource(id = R.string.app_name),
+                searchHint = stringResource(R.string.hint_search_news),
+                searchBarState = SearchBarState.Collapsed,
+                onSearchChanged = {
+                    searchQuery = it
+                    queryJob(searchQuery)
                 }
+            )
+        }
+    ) {
+        Column(modifier = Modifier.background(Color(0xFFF0F0F0))) {
+            SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = {
+                    swipeRefreshState = SwipeRefreshState(true)
+                    if (searchQuery.isEmpty()) {
+                        viewModel.getTopHeadlines()
+                    } else {
+                        viewModel.getNews(searchQuery)
+                    }
+                }
+            ) {
+                LoadNews(newsUiState)
             }
-        ) {
-            LoadNews(newsUiState)
         }
     }
 }
