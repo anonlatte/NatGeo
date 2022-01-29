@@ -7,7 +7,6 @@ interface MainRepository {
     suspend fun getTopHeadlines(language: String, country: String): RequestState<ArticlesResponse>
     suspend fun getArticles(
         query: String,
-        language: String,
-        country: String
+        language: String
     ): RequestState<ArticlesResponse>
 }

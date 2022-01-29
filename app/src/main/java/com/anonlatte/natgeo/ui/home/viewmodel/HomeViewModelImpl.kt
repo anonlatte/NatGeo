@@ -21,9 +21,11 @@ class HomeViewModelImpl @Inject constructor(
     override val uiState = MutableStateFlow<NewsUiState>(NewsUiState.Success(emptyList()))
 
     init {
-        makeResponseAndCollect {
-            interactor.getTopHeadlines()
-        }
+        getTopHeadlines()
+    }
+
+    override fun getTopHeadlines() {
+        makeResponseAndCollect { interactor.getTopHeadlines() }
     }
 
     override fun getNews(query: String) {

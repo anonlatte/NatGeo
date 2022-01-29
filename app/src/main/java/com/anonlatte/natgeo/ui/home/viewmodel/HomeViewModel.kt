@@ -7,4 +7,5 @@ interface HomeViewModel {
     val uiState: StateFlow<NewsUiState>
 
     fun getNews(query: String)
+    fun getTopHeadlines()
 }

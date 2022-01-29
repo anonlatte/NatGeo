@@ -28,6 +28,9 @@ import com.anonlatte.natgeo.ui.home.state.NewsUiState
 import com.anonlatte.natgeo.ui.home.viewmodel.HomeViewModel
 import com.anonlatte.natgeo.ui.theme.Dimension
 import com.anonlatte.natgeo.utils.debounce
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 private fun ArticleItem(
@@ -206,6 +209,8 @@ private fun PreviewArticleMainItem() {
 @Composable
 fun Home(viewModel: HomeViewModel) {
     val newsUiState: NewsUiState by viewModel.uiState.collectAsState(initial = NewsUiState.Loading)
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+    var swipeRefreshState: SwipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     val scope = rememberCoroutineScope()
     val queryJob = debounce<String>(500, scope) {
         if (it.isNotBlank()) {
@@ -213,7 +218,10 @@ fun Home(viewModel: HomeViewModel) {
         }
     }
 
-    var searchQuery by rememberSaveable { mutableStateOf("") }
+    if (newsUiState is NewsUiState.Error || newsUiState is NewsUiState.Success) {
+        swipeRefreshState = SwipeRefreshState(false)
+    }
+
     Column(modifier = Modifier.background(Color(0xFFF0F0F0))) {
         SearchField(
             modifier = Modifier.fillMaxWidth(),
@@ -223,6 +231,18 @@ fun Home(viewModel: HomeViewModel) {
                 queryJob(searchQuery)
             }
         )
-        LoadNews(newsUiState)
+        SwipeRefresh(
+            state = swipeRefreshState,
+            onRefresh = {
+                swipeRefreshState = SwipeRefreshState(true)
+                if (searchQuery.isEmpty()) {
+                    viewModel.getTopHeadlines()
+                } else {
+                    viewModel.getNews(searchQuery)
+                }
+            }
+        ) {
+            LoadNews(newsUiState)
+        }
     }
 }

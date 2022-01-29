@@ -9,10 +9,9 @@ import javax.inject.Inject
 class MainRepositoryImpl @Inject constructor(private val natGeoApi: NatGeoApi) : MainRepository {
     override suspend fun getArticles(
         query: String,
-        language: String,
-        country: String
+        language: String
     ): RequestState<ArticlesResponse> {
-        return safeApiCall { natGeoApi.getArticles(query, language, country) }
+        return safeApiCall { natGeoApi.getArticles(query, language) }
     }
 
     override suspend fun getTopHeadlines(

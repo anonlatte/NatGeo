@@ -35,8 +35,7 @@ class HomeInteractorImpl @Inject constructor(
         return buildRequestFlow {
             mainRepository.getArticles(
                 query = query,
-                language = deviceInfo.language,
-                country = deviceInfo.country
+                language = deviceInfo.language
             )
         }
     }

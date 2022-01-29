@@ -8,8 +8,7 @@ interface NatGeoApi {
     @GET("everything")
     suspend fun getArticles(
         @Query("q") query: String,
-        @Query("language") language: String,
-        @Query("country") country: String
+        @Query("language") language: String
     ): ArticlesResponse
 
     @GET("top-headlines")
