@@ -1,5 +1,6 @@
 package com.anonlatte.natgeo.data.repository
 
+import com.anonlatte.natgeo.data.db.model.ArticleEntity
 import com.anonlatte.natgeo.data.model.article.Article
 import com.anonlatte.natgeo.data.model.article.ArticlesData
 import com.anonlatte.natgeo.data.model.article.SourceArticle
@@ -32,5 +33,19 @@ class ArticleMapper @Inject constructor() {
 
     private fun SourceArticleDto.toDomain(): SourceArticle {
         return SourceArticle(id, name)
+    }
+
+    fun mapToEntity(article: Article): ArticleEntity {
+        return with(article) {
+            ArticleEntity(
+                author = author,
+                title = title,
+                description = description,
+                url = url,
+                urlToImage = urlToImage,
+                publishedAt = publishedAt,
+                content = content
+            )
+        }
     }
 }

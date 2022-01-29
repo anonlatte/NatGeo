@@ -1,5 +1,6 @@
 package com.anonlatte.natgeo.ui.home
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,15 +13,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import coil.annotation.ExperimentalCoilApi
 import com.anonlatte.natgeo.R
 import com.anonlatte.natgeo.data.model.article.Article
 import com.anonlatte.natgeo.data.navigation.NavDestinations
 import com.anonlatte.natgeo.ui.custom.CoilImage
 import com.anonlatte.natgeo.ui.custom.SearchBar
 import com.anonlatte.natgeo.ui.custom.SearchBarState
+import com.anonlatte.natgeo.ui.home.state.NewsUiEvent
 import com.anonlatte.natgeo.ui.home.state.NewsUiState
 import com.anonlatte.natgeo.ui.home.viewmodel.HomeViewModel
 import com.anonlatte.natgeo.ui.theme.Dimension
@@ -29,7 +33,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
 @Composable
 private fun ArticleItem(
     data: Article,
@@ -72,7 +76,7 @@ private fun ArticleItem(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
 @Composable
 private fun ArticleMainItem(
     data: Article,
@@ -186,6 +190,7 @@ private fun PreviewArticleMainItem() {
 
 @Composable
 fun Home(viewModel: HomeViewModel, navController: NavHostController) {
+    HandleNewsUiEvent(viewModel, navController)
     val newsUiState: NewsUiState by viewModel.uiState.collectAsState(initial = NewsUiState.Loading)
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var swipeRefreshState: SwipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
@@ -229,10 +234,30 @@ fun Home(viewModel: HomeViewModel, navController: NavHostController) {
                 LoadNews(
                     newsUiState = newsUiState
                 ) { article ->
-                    val articleId = 1
-                    navController.navigate("${NavDestinations.ARTICLE}/$articleId")
+                    viewModel.storeArticleAndNavigate(article)
                 }
             }
         }
+    }
+}
+
+@Composable
+fun HandleNewsUiEvent(viewModel: HomeViewModel, navController: NavHostController) {
+    val newsUiEvent: NewsUiEvent by viewModel.uiEvent.collectAsState(NewsUiEvent.Idle)
+    when (newsUiEvent) {
+        is NewsUiEvent.ArticleSaved -> {
+            val articleId = (newsUiEvent as NewsUiEvent.ArticleSaved).articleId
+            navController.navigate("${NavDestinations.ARTICLE}/${articleId}")
+            viewModel.resetEventState()
+        }
+        NewsUiEvent.ArticleSavingError -> {
+            val context = LocalContext.current
+            Toast.makeText(
+                context,
+                stringResource(id = R.string.error_while_navigation),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+        NewsUiEvent.Idle -> Unit
     }
 }

@@ -1,6 +1,7 @@
 package com.anonlatte.natgeo.ui.home.interactor
 
 import com.anonlatte.natgeo.data.model.UserInfo
+import com.anonlatte.natgeo.data.model.article.Article
 import com.anonlatte.natgeo.data.model.article.ArticlesData
 import com.anonlatte.natgeo.data.network.ErrorState
 import com.anonlatte.natgeo.data.network.RequestState
@@ -38,6 +39,10 @@ class HomeInteractorImpl @Inject constructor(
                 language = deviceInfo.language
             )
         }
+    }
+
+    override suspend fun storeArticle(article: Article): Flow<Long> {
+        return mainRepository.storeArticle(article)
     }
 
     private fun buildRequestFlow(

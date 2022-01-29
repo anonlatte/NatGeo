@@ -4,4 +4,5 @@
     <string name="btn_back">Назад</string>
     <string name="content_empty_news">Didn\'t get any news</string>
     <string name="hint_search_news">Find news</string>
+    <string name="error_while_navigation">Received error on navigation</string>
 </resources>

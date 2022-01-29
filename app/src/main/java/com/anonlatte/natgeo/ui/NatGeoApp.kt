@@ -23,7 +23,7 @@ fun NatGeoApp() {
                 Home(viewModel = hiltViewModel<HomeViewModelImpl>(), navController = navController)
             }
             composable(
-                route = "${NavDestinations.ARTICLE}/$ARGS_ARTICLE_ID",
+                route = "${NavDestinations.ARTICLE}/{$ARGS_ARTICLE_ID}",
                 arguments = listOf(navArgument(ARGS_ARTICLE_ID) { type = NavType.IntType })
             ) {
                 Article()
