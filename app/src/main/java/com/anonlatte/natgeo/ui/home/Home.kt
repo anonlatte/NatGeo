@@ -17,13 +17,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.navigation.NavHostController
 import com.anonlatte.natgeo.R
+import com.anonlatte.natgeo.data.navigation.NavDestinations
 import com.anonlatte.natgeo.data.network.response.ArticleDto
 import com.anonlatte.natgeo.ui.custom.CoilImage
 import com.anonlatte.natgeo.ui.custom.SearchBar
 import com.anonlatte.natgeo.ui.custom.SearchBarState
 import com.anonlatte.natgeo.ui.home.state.NewsUiState
 import com.anonlatte.natgeo.ui.home.viewmodel.HomeViewModel
-import com.anonlatte.natgeo.ui.navigation.NavDestinations
 import com.anonlatte.natgeo.ui.theme.Dimension
 import com.anonlatte.natgeo.utils.debounce
 import com.google.accompanist.swiperefresh.SwipeRefresh

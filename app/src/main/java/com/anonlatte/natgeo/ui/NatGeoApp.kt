@@ -6,10 +6,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.anonlatte.natgeo.data.navigation.NavDestinations
 import com.anonlatte.natgeo.ui.article.Article
 import com.anonlatte.natgeo.ui.home.Home
 import com.anonlatte.natgeo.ui.home.viewmodel.HomeViewModelImpl
-import com.anonlatte.natgeo.ui.navigation.NavDestinations
 
 @Composable
 fun NatGeoApp() {

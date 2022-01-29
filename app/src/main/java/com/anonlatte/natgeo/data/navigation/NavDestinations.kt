@@ -1,4 +1,4 @@
-package com.anonlatte.natgeo.ui.navigation
+package com.anonlatte.natgeo.data.navigation
 
 object NavDestinations {
     const val HOME = "home"
