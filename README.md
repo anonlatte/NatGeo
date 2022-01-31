@@ -1,4 +1,4 @@
-### News reader for national geographic source with [NewsAPI](https://newsapi.org/)
+### News reader with [NewsAPI](https://newsapi.org/)
 
 Primary purpose of creation this application is learning new and perspective technology - Jetpack
 Compose
