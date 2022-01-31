@@ -21,7 +21,7 @@ class ArticleMapper @Inject constructor() {
                     source.toDomain(),
                     author,
                     title ?: "",
-                    description,
+                    description ?: "",
                     url,
                     urlToImage,
                     publishedAt,

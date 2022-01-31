@@ -12,7 +12,7 @@ data class ArticleDto(
     @Json(name = "title")
     val title: String? = null,
     @Json(name = "description")
-    val description: String = "",
+    val description: String? = "",
     @Json(name = "url")
     val url: String = "",
     @Json(name = "urlToImage")
