@@ -1,6 +1,6 @@
 package com.anonlatte.natgeo.data.repository
 
-import com.anonlatte.natgeo.data.db.dto.ArticleDao
+import com.anonlatte.natgeo.data.db.dao.ArticleDao
 import com.anonlatte.natgeo.data.model.article.Article
 import com.anonlatte.natgeo.data.model.article.ArticlesData
 import com.anonlatte.natgeo.data.network.NatGeoApi

@@ -3,7 +3,7 @@ package com.anonlatte.natgeo.di
 import android.content.Context
 import androidx.room.Room
 import com.anonlatte.natgeo.data.db.NewsDatabase
-import com.anonlatte.natgeo.data.db.dto.ArticleDao
+import com.anonlatte.natgeo.data.db.dao.ArticleDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

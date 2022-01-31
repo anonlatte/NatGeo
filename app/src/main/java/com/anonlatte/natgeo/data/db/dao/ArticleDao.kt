@@ -1,4 +1,4 @@
-package com.anonlatte.natgeo.data.db.dto
+package com.anonlatte.natgeo.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
