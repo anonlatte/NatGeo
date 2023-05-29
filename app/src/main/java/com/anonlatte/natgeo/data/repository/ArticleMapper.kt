@@ -48,4 +48,18 @@ class ArticleMapper @Inject constructor() {
             )
         }
     }
+
+    fun mapToDomain(article: ArticleEntity): Article {
+        return with(article) {
+            Article(
+                author = author,
+                title = title,
+                description = description,
+                url = url,
+                urlToImage = urlToImage,
+                publishedAt = publishedAt,
+                content = content
+            )
+        }
+    }
 }

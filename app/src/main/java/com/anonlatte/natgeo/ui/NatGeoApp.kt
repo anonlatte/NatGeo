@@ -10,7 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.anonlatte.natgeo.data.navigation.NavDestinations
 import com.anonlatte.natgeo.ui.article.ARGS_ARTICLE_ID
-import com.anonlatte.natgeo.ui.article.Article
+import com.anonlatte.natgeo.ui.article.ArticleScreen
 import com.anonlatte.natgeo.ui.home.Home
 import com.anonlatte.natgeo.ui.home.viewmodel.HomeViewModelImpl
 
@@ -26,7 +26,11 @@ fun NatGeoApp() {
                 route = "${NavDestinations.ARTICLE}/{$ARGS_ARTICLE_ID}",
                 arguments = listOf(navArgument(ARGS_ARTICLE_ID) { type = NavType.IntType })
             ) {
-                Article()
+                ArticleScreen(
+                    viewModel = hiltViewModel(),
+                    navController = navController,
+                    articleId = it.arguments!!.getInt(ARGS_ARTICLE_ID)
+                )
             }
         }
     }

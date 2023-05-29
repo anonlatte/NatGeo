@@ -33,7 +33,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ArticleItem(
     data: Article,
@@ -219,7 +219,11 @@ fun Home(viewModel: HomeViewModel, navController: NavHostController) {
             )
         }
     ) {
-        Column(modifier = Modifier.background(Color(0xFFF0F0F0))) {
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .background(Color(0xFFF0F0F0))
+        ) {
             SwipeRefresh(
                 state = swipeRefreshState,
                 onRefresh = {
